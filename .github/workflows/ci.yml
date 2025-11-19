@@ -24,6 +24,23 @@ jobs:
         cmake -S . -B build -DBUILD_TESTING=ON
         cmake --build build --parallel 2
 
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Build Rust consumer
+      run: |
+        cd rust_consumer
+        cargo build --verbose
+
+    - name: Run Rust consumer
+      run: |
+        cd rust_consumer
+        cargo run --verbose
+
     - name: Run tests (ctest)
       run: |
         ctest --test-dir build --output-on-failure

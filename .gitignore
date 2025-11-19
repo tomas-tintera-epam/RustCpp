@@ -1,4 +1,5 @@
 build/
+rust_consumer/target/
 *.o
 *.a
 *.exe

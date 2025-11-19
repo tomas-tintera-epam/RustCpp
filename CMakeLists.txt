@@ -9,6 +9,7 @@ add_executable(taskmgr TaskManager.cpp)
 # Build C wrapper as a static library
 add_library(task_c STATIC task_c.cpp)
 target_include_directories(task_c PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(task_c PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(MSVC)
   target_compile_options(task_c PRIVATE /W4 /permissive-)
