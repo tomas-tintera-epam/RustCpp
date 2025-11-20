@@ -4,10 +4,11 @@ project(TaskManager VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(taskmgr TaskManager.cpp)
+add_executable(taskmgr Main.cpp)
+target_link_libraries(taskmgr PRIVATE task_c)
 
 # Build C wrapper as a static library
-add_library(task_c STATIC task_c.cpp)
+add_library(task_c STATIC task_c.cpp TaskManager.cpp)
 target_include_directories(task_c PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(task_c PROPERTIES POSITION_INDEPENDENT_CODE ON)
 

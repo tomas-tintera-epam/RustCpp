@@ -1,30 +1,60 @@
-// Sample C++ program: simple in-memory task manager
-// Requires C++17 or later.
+// TaskManager method implementations
 
 #include "TaskManager.hpp"
-#include <iostream>
 
-int main() {
-    TaskManager mgr;
-    mgr.add("Write proposal", 2);
-    mgr.add("Buy groceries", 5);
-    mgr.add("Fix bug #123", 1);
-    mgr.add("Read book", 8);
+int TaskManager::add(const std::string& title, int priority) {
+    tasks.push_back({nextId, title, priority, false});
+    return nextId++;
+}
 
-    std::cout << "All tasks:\n";
-    mgr.list();
+bool TaskManager::markDone(int id) {
+    for (auto &t : tasks) {
+        if (t.id == id) { 
+            t.done = true; 
+            return true; 
+        }
+    }
+    return false;
+}
 
-    mgr.sortByPriority();
-    std::cout << "\nSorted by priority:\n";
-    mgr.list();
+void TaskManager::removeCompleted() {
+    tasks.erase(std::remove_if(tasks.begin(), tasks.end(),
+                               [](const Task& t){ return t.done; }),
+                tasks.end());
+}
 
-    mgr.markDone(3); // mark "Fix bug #123" done
-    std::cout << "\nAfter marking task 3 done:\n";
-    mgr.list();
+void TaskManager::sortByPriority() {
+    std::sort(tasks.begin(), tasks.end(),
+              [](const Task& a, const Task& b) {
+                  if (a.priority != b.priority) return a.priority < b.priority;
+                  return a.id < b.id;
+              });
+}
 
-    mgr.removeCompleted();
-    std::cout << "\nAfter removing completed tasks:\n";
-    mgr.list();
+void TaskManager::list() const {
+    if (tasks.empty()) {
+        std::cout << "No tasks.\n";
+        return;
+    }
+    for (const auto& t : tasks) {
+        std::cout << "[" << t.id << "] "
+                  << (t.done ? "[x] " : "[ ] ")
+                  << "P" << t.priority << " "
+                  << t.title << '\n';
+    }
+}
 
-    return 0;
+std::string TaskManager::listAsString() const {
+    std::ostringstream os;
+    if (tasks.empty()) {
+        os << "No tasks.\n";
+        return os.str();
+    }
+    for (const auto& t : tasks) {
+        os << "[" << t.id << "] "
+           << (t.done ? "[x] " : "[ ] ")
+           << "P" << t.priority << " "
+           << t.title << '\n';
+    }
+    return os.str();
 }
